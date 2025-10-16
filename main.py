@@ -5,14 +5,16 @@ import gzip
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Date
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
+from dotenv import load_dotenv
+
 
 Base = declarative_base()
 
 # --- CONFIGURACIÓN BASE DE DATOS ---
-SQL_HOST = "143.110.232.95"
-SQL_PORT = "3306"
-SQL_URI = f"mysql+pymysql://dynamo:dynamo@{SQL_HOST}:{SQL_PORT}/vrio_chile"
+load_dotenv()  # 👈 Carga automáticamente el archivo .env
 
+SQL_URI = os.getenv("SQL_URI", "mysql+pymysql://user:password@localhost/dbname")
 
 class DeviceStatusSummary(Base):
     __tablename__ = "device_status_summary"
@@ -114,6 +116,6 @@ def process_directory(folder_path: str, db_url: str):
 
 
 if __name__ == "__main__":
-    folder_path = "/home/dpflores/Del/DYNAMO EDGE/VRIO/backup_acs_report"  # Carpeta actual
+    folder_path = "/home/dpflores/Del/DYNAMO EDGE/backup_acs_report"  # Carpeta actual
     db_url = SQL_URI
     process_directory(folder_path, db_url)
